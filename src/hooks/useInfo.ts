@@ -30,7 +30,8 @@ export const useCityInfo = () => {
                             bidLevel: Number(decodeToText(data['bidLevel'])),
                             owner: number.toHex(data['owner']),
                             ipfsHash: decodeToText(data['ipfsHash1']) + decodeToText(data['ipfsHash2']),
-                            twitter: decodeToText(data['twitter'])
+                            twitter: decodeToText(data['twitter']),
+                            bidPrice: getBalanceNumber(number.toBN(data['bidPrice']))
                         }
                     })
                 )
@@ -53,29 +54,6 @@ export const useCityInfo = () => {
     }, [fetch, slowRefresh])
 
     return cityInfo
-}
-
-export const useBaseInfo = () => {
-    const billboardContract = useStarknetContract('billboard', abis['billboard'])
-    const basePriceData = useStarknetCall({
-        contract: billboardContract,
-        method: "get_base_price",
-        args: []
-    })
-
-    const splitRatioData = useStarknetCall({
-        contract: billboardContract,
-        method: "get_split_ratio",
-        args: []
-    })
-
-    const basePrice = basePriceData.data && number.toBN(basePriceData.data[0])
-    const splitRatio = splitRatioData.data && Number(number.toBN(splitRatioData.data[0]))
-
-    return {
-        basePrice: getBalanceNumber(basePrice) ?? 1,
-        splitRatio: splitRatio ?? 2
-    }
 }
 
 export const useWorldTokenBalance = () => {

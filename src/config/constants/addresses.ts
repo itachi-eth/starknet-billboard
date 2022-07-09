@@ -3,9 +3,9 @@ interface ContractAddress {
 }
 
 const addresses: ContractAddress = {
-    worldToken: "0x020c2fa831525f818d96e0f1655cdcc3a78eb3871b8e911f179b5cc99741ae69",
-    billboard: "0x016cdebc439a127a179e2db93eb237691ca8f43eac4834a08685bd3148576b32",
-    collection: "0x07c3ffcfb2996615a7ac7812ebfd38d8519018fe8feedad74f9a11ac8b1527e5"
+    worldToken: "0x02cfb380ddbde85af1b96a4a0d446031d1ef0020d727f35f2e7db4d55069278a",
+    billboard: "0x055027d94747faa8020b23fcbb3c3a3bf5819043b7688a479ad2fac4baeb4020",
+    collection: "0x014b0e1503737ba46233b696753acfd2b4c8787a2ac9fc8fc113603d09b48259"
 }
 
 export default addresses

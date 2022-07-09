@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { Box, Dialog, CircularProgress, Typography } from "@mui/material";
 import { IconContainer, CloseButton } from "./elements";
 import { FaTimes } from "react-icons/fa"
@@ -7,6 +7,7 @@ import { FaCheckCircle } from "react-icons/fa"
 import { LinkEnternal } from "../Link";
 import { useTransactionManager } from "../../hooks/useTransactions";
 import { getTranscationHash } from "../../utils/getChainInfo";
+import { useInfo } from "../../contexts/Info/hooks";
 
 export type Action = 'BID' | 'APPROVE' | 'MINT' | 'UPLOAD'
 export type Result = 'PENDING' | 'ACCEPTED' | 'REJECTED'
@@ -19,8 +20,8 @@ interface Props {
 }
 
 const ResultDialog: React.FC<Props> = ({ city, open, handleClose, action }) => {
-    const { loadingMessage, successMessage, errorMessage, result, transactionHash } = useTransactionManager(action, city)
-    console.log(">>>>>>result", result)
+    const { loadingMessage, successMessage, errorMessage, result } = useTransactionManager(action, city)
+    const { latestTransactionHash } = useInfo()
 
     let comp;
 
@@ -35,7 +36,7 @@ const ResultDialog: React.FC<Props> = ({ city, open, handleClose, action }) => {
                 <FaCheckCircle />
             </IconContainer>
             <Typography sx={{ fontSize: 20, marginTop: "10px" }} color="text.secondary">{successMessage}</Typography>
-            {transactionHash && <LinkEnternal href={getTranscationHash(transactionHash)} text={"View on Voyager"} />}
+            {latestTransactionHash && <LinkEnternal href={getTranscationHash(latestTransactionHash)} text={"View on Voyager"} />}
         </Box>
     } else if (result === "REJECTED") {
         comp = <Box sx={{

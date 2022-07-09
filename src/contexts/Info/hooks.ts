@@ -1,4 +1,4 @@
 import { useContext } from 'react'
 import { InfoContext } from './context'
 
-export const useBaseInfo = () => useContext(InfoContext)
+export const useInfo = () => useContext(InfoContext)

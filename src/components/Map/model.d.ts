@@ -1,16 +1,12 @@
 import { City } from "../../config/model";
 
-export interface BaseInfo {
-    basePrice: number
-    splitRatio: number
-}
-
 export interface CityInfo extends City {
     isBid?: boolean,
     owner?: string,
     ipfsHash?: string,
     bidLevel?: number
     twitter?: string
+    bidPrice?: number
 }
 
 export interface PostOrBidProps {

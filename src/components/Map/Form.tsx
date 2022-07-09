@@ -14,28 +14,26 @@ import validator from "validator"
 import { useStarknet } from "@starknet-react/core";
 import { uint256, } from "starknet";
 import { stringToFelt } from "../../utils/format"
-import ResultDialog, { Action } from "../Dialog"
 import { abis } from "../../config"
 import { getContractAddress } from "../../utils/addressHelpers"
-import { useBaseInfo } from "../../contexts/Info/hooks"
+import { useInfo } from "../../contexts/Info/hooks"
+import { useStarknetTransactionManager } from "@starknet-react/core"
 
 const ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
-const Form: React.FC<FormProps> = ({ info, setPopupInfo }) => {
+const Form: React.FC<FormProps> = ({ info, setPopupInfo, setShowForm }) => {
     const { account } = useStarknet()
     const [twitterName, setTwitterName] = useState<string>("")
     const [validImage, setValidImage] = useState<boolean>(true)
     const [validTwitter, setValidTwitter] = useState<boolean>(true);
-    const [openDialog, setOpenDialog] = useState<boolean>(false)
-    const [action, setAction] = useState<Action>("APPROVE")
     const worldTokenApproveInvoke = useInvoke('worldToken', abis['worldToken'], 'approve')
     const billlboardBidInvoke = useInvoke('billboard', abis['billboard'], 'bid')
     const billboardAddress = getContractAddress("billboard")
     const allowance = useAllowance()
-    const { worldTokenBalance } = useBaseInfo()
-
+    const { worldTokenBalance, onSetAction, handleDialog, onSetSelectedCity, latestTransactionHash } = useInfo()
     const [file, setFile] = useState<any>(null);
     const [buffer, setBuffer] = useState<any>(null);
+    const { removeTransaction } = useStarknetTransactionManager()
 
     const validateAllFields = (field: string, fieldValue: string) => {
         if (field === 'twitter') {
@@ -88,15 +86,19 @@ const Form: React.FC<FormProps> = ({ info, setPopupInfo }) => {
     }
 
     const onSubmit = async (event: any) => {
-        setAction("UPLOAD")
+        onSetAction("UPLOAD")
         billlboardBidInvoke.reset()
+        setPopupInfo(null)
         event.preventDefault()
-        setOpenDialog(true)
+        handleDialog(true)
+        onSetSelectedCity(info.city)
+        setShowForm(false)
+        removeTransaction(latestTransactionHash)
 
         const response = await ipfs.add(buffer) as any
 
         if (response) {
-            setAction("BID")
+            onSetAction("BID")
             const hash = response.path as String
             const hash1 = hash.substring(0, hash.length / 2);
             const hash2 = hash.substring(hash.length / 2)
@@ -113,17 +115,20 @@ const Form: React.FC<FormProps> = ({ info, setPopupInfo }) => {
         }
     }
 
-    const handleApprove = useCallback(() => {
+    const handleApprove = () => {
+        setPopupInfo(null)
+        setShowForm(false)
         worldTokenApproveInvoke.reset()
         const amount = uint256.bnToUint256(uint256.UINT_256_MAX)
-        setOpenDialog(true)
-        setAction("APPROVE")
+        handleDialog(true)
+        onSetAction("APPROVE")
+        removeTransaction(latestTransactionHash)
 
         worldTokenApproveInvoke.invoke({
             args: [billboardAddress, amount],
         })
 
-    }, [billboardAddress, worldTokenApproveInvoke])
+    }
 
     return (
         <>
@@ -192,12 +197,7 @@ const Form: React.FC<FormProps> = ({ info, setPopupInfo }) => {
                 </form>
             </PopupLayout>
 
-            <ResultDialog
-                open={openDialog}
-                handleClose={() => setOpenDialog(false)}
-                city={info.city}
-                action={action}
-            />
+
         </>
     )
 }

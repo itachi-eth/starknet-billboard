@@ -1,35 +1,94 @@
-import React, { useCallback, useState } from "react"
+import React from "react"
 import { PopupLayout, TwitterLink } from "./elements"
+import md5 from "md5"
+import { create } from 'ipfs-http-client'
 import { FormProps } from "./model"
 import { Typography, Button } from "@mui/material"
 import Image from "next/image"
 import { Box } from "@mui/system"
 import truncateWalletAddress from "../../utils/truncateWalletAddress"
+import { stringToFelt } from "../../utils/format"
 import { useStarknet } from "@starknet-react/core"
-import { useBaseInfo } from "../../contexts/Info/hooks"
+import { useInfo } from "../../contexts/Info/hooks"
 import { FaTwitter } from "react-icons/fa"
 import useInvoke from "../../hooks/useInvoke"
 import { abis } from "../../config"
-import ResultDialog, { Action } from "../Dialog"
+import { useStarknetTransactionManager } from "@starknet-react/core"
+
+const ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+
+export interface Trait {
+    attributes: Attribute[];
+    image: string;
+    description: string;
+    name: string;
+    id?: string;
+}
+
+interface Attribute {
+    trait_type: string;
+    value: string;
+}
 
 const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
-    const { id, ipfsHash, bidLevel, owner, twitter, city } = info;
+    const { id, ipfsHash, bidLevel, owner, twitter, city, bidPrice } = info;
     const { account } = useStarknet()
-    const { basePrice, splitRatio, worldTokenBalance } = useBaseInfo()
-    const [action, setAction] = useState<Action>("MINT")
-    const [openDialog, setOpenDialog] = useState<boolean>(false)
+    const { worldTokenBalance, handleDialog, onSetAction, latestTransactionHash } = useInfo()
     const collectionMintInvoke = useInvoke('collection', abis['collection'], 'mint')
+    const { removeTransaction } = useStarknetTransactionManager()
 
-    const mint = useCallback(() => {
+    const mint = async () => {
         if (account === owner) {
+            setPopupInfo(null)
+            setShowForm(false)
             collectionMintInvoke.reset()
-            setOpenDialog(true)
-            setAction("MINT")
-            collectionMintInvoke.invoke({
-                args: [id],
-            })
+            handleDialog(true)
+            onSetAction("MINT")
+            removeTransaction(latestTransactionHash)
+
+            const string = ipfsHash + city + owner + bidLevel + bidPrice
+            const uniqueIdentifier = md5(string).slice(0, 7)
+
+            const trait: Trait = {
+                attributes: [
+                    {
+                        trait_type: "bid level",
+                        value: String(bidLevel)
+                    },
+                    {
+                        trait_type: "city",
+                        value: city
+                    },
+                    {
+                        trait_type: "twitter",
+                        value: String(twitter),
+                    },
+                    {
+                        trait_type: "bid price",
+                        value: `${Number(bidPrice)} $WORLD`
+                    },
+
+                ],
+                image: `https://ipfs.infura.io/ipfs/${ipfsHash}`,
+                description: "NFT from Starknet World Map Billboard",
+                name: `Billboard NFT #${uniqueIdentifier}`
+            }
+
+            const response = await ipfs.add(Buffer.from(JSON.stringify(trait))) as any;
+
+            if (response) {
+                const hash = response.path as String
+                const baseTokenURI = stringToFelt("https://ipfs.infura.io/ipfs/")
+                const hash1 = stringToFelt(hash.substring(0, hash.length / 2));
+                const hash2 = stringToFelt(hash.substring(hash.length / 2))
+                const tokenURIs = [baseTokenURI, hash1, hash2]
+
+                collectionMintInvoke.invoke({
+                    args: [id, tokenURIs],
+                })
+            }
         }
-    }, [collectionMintInvoke, account, owner, id])
+    }
 
     return (
         <>
@@ -108,7 +167,7 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             mb: 1.5
                         }}>
                             <Typography sx={{ mr: 1.5 }} color="primary" fontWeight={700} fontSize="18px">Bid Price: </Typography>
-                            <Typography color="text.secondary">{basePrice * Number(bidLevel)} $WORLD</Typography>
+                            <Typography color="text.secondary">{bidPrice} $WORLD</Typography>
                         </Box>
 
                         <Box sx={{
@@ -117,19 +176,12 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             justifyContent: 'space-between',
                             width: "100%"
                         }}>
-                            <Button variant="outlined" disabled={!account || worldTokenBalance < (basePrice * Number(bidLevel))} onClick={() => setShowForm(true)}>Bid</Button>
+                            <Button variant="outlined" disabled={!account || worldTokenBalance < Number(bidPrice)} onClick={() => setShowForm(true)}>Bid</Button>
                             <Button variant="contained" disabled={!account || account !== owner} onClick={mint}>Mint</Button>
                         </Box>
                     </Box>
                 </Box>
             </PopupLayout>
-
-            <ResultDialog
-                open={openDialog}
-                handleClose={() => setOpenDialog(false)}
-                city={info.city}
-                action={action}
-            />
         </>
     )
 }

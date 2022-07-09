@@ -3,6 +3,8 @@ import Head from 'next/head'
 import Mapbox from '../components/Map/Mapbox'
 import WalletConnect from '../components/WalletConnect'
 import { Box } from '@mui/system'
+import { IconButton } from '@mui/material'
+import { FaTwitter, FaGithub, FaReadme } from 'react-icons/fa'
 
 const Home: NextPage = () => {
   return (
@@ -16,8 +18,8 @@ const Home: NextPage = () => {
       <main>
         <Box sx={{
           height: '100vh',
-          maxWidth: "1440px",
-          margin: "0 auto",
+          maxWidth: "1920px",
+          padding: "0 50px",
         }}>
           <Box sx={{
             display: 'flex',
@@ -25,7 +27,28 @@ const Home: NextPage = () => {
             justifyContent: 'space-between',
             width: '100%',
           }}>
-            <h1>Starknet World Map Billboard</h1>
+            <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'start',
+              width: '100%',
+              flex: 1
+            }}>
+              <h1>Starknet World Map Billboard</h1>
+
+              <IconButton size="large" onClick={() => window.open("https://twitter.com/cryptoleek", "_blank")}>
+                <FaTwitter color="#0092e9" />
+              </IconButton>
+
+              <IconButton size="large" onClick={() => window.open("https://github.com/cryptoleek-team/starknet-worldmap-billboard", "_blank")}>
+                <FaGithub color='black' />
+              </IconButton>
+
+              <IconButton size="large" onClick={() => window.open("https://github.com/cryptoleek-team/starknet-worldmap-billboard#readme", "_blank")}>
+                <FaReadme color='black' />
+              </IconButton>
+            </Box>
+
             <WalletConnect />
           </Box>
           <Mapbox />
