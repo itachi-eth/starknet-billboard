@@ -7,14 +7,13 @@ import Form from "./Form"
 
 const StyledPopup = styled(Popup)(({ theme }) => ({
     cursor: "default",
-    minWidth: "400px",
 
     ".mapboxgl-popup-close-button": {
         position: "absolute",
         top: "5px",
         right: "5px",
         background: "transparent",
-        color: "#FA02DC",
+        color: theme.palette.primary.main,
         fontSize: "25px"
     }
 }))
@@ -36,6 +35,7 @@ const PostOrBid: React.FC<PostOrBidProps> = ({ info, setPopupInfo }) => {
         <div>
             {
                 info && <StyledPopup
+                    maxWidth={"500px"}
                     anchor="top"
                     longitude={info.longitude}
                     latitude={info.latitude}

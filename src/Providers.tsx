@@ -1,7 +1,9 @@
 import React from 'react'
+import { ThemeProvider } from '@mui/material'
 import { RefreshContextProvider } from './contexts/Refresh/context'
 import { InfoContextProvider } from './contexts/Info/context'
 import { StarknetProvider, getInstalledInjectedConnectors } from "@starknet-react/core";
+import theme from './theme'
 
 interface Props {
     children: React.ReactNode;
@@ -13,9 +15,11 @@ const Providers: React.FC<Props> = ({ children }) => {
     return (
         <StarknetProvider connectors={connectors}>
             <RefreshContextProvider>
-                <InfoContextProvider>
-                    {children}
-                </InfoContextProvider>
+                <ThemeProvider theme={theme}>
+                    <InfoContextProvider>
+                        {children}
+                    </InfoContextProvider>
+                </ThemeProvider>
             </RefreshContextProvider>
         </StarknetProvider>
     )

@@ -17,5 +17,5 @@ export const CloseButton = styled(IconButton)(({ theme }) => ({
     top: "1.2rem",
     right: "1.5rem",
     background: "transparent",
-    color: "#FA02DC",
+    color: theme.palette.primary.main,
 }))

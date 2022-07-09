@@ -4,7 +4,7 @@ import { FiExternalLink } from "react-icons/fi"
 import Link from "next/link";
 
 const LinkItems = styled('a')<{ margin?: string }>(({ theme, margin }) => ({
-    color: "#FA02DC",
+    color: theme.palette.primary.main,
     margin: `${margin ? margin : "10px 0"}`,
     width: "100%",
     fontSize: "14px",
@@ -14,7 +14,7 @@ const LinkItems = styled('a')<{ margin?: string }>(({ theme, margin }) => ({
     justifyContent: "center",
 
     "svg": {
-        color: "#FA02DC",
+        color: theme.palette.primary.main,
         width: "16px",
         height: "16px",
         margin: "5px",

@@ -15,7 +15,7 @@ import ResultDialog, { Action } from "../Dialog"
 const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
     const { id, ipfsHash, bidLevel, owner, twitter, city } = info;
     const { account } = useStarknet()
-    const { basePrice, splitRatio } = useBaseInfo()
+    const { basePrice, splitRatio, worldTokenBalance } = useBaseInfo()
     const [action, setAction] = useState<Action>("MINT")
     const [openDialog, setOpenDialog] = useState<boolean>(false)
     const collectionMintInvoke = useInvoke('collection', abis['collection'], 'mint')
@@ -36,25 +36,25 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
             <PopupLayout>
                 <Box sx={{
                     display: "flex",
-                    alignItems: "center",
+                    alignItems: "start",
                     justifyContent: "space-between"
                 }}>
-                    <Image src={`https://ipfs.infura.io/ipfs/${ipfsHash}`} alt={info.city} width={100} height={75} />
+                    <Image src={`https://ipfs.infura.io/ipfs/${ipfsHash}`} alt={info.city} width={200} height={150} />
                     <Box sx={{
                         display: "flex",
                         alignItems: "start",
                         flexDirection: "column",
                         justifyContent: "center",
-                        margin: "10px",
+                        margin: "0 10px",
                     }}>
 
                         <Box sx={{
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            mb: 1.5
+                            mb: 1
                         }}>
-                            <Typography mr={1} color="text.secondary">City:</Typography>
+                            <Typography mr={1} color="primary" fontWeight={700} fontSize="18px">City:</Typography>
                             <Typography color="text.secondary">{city}</Typography>
                         </Box>
 
@@ -62,9 +62,9 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            mb: 1.5
+                            mb: 1
                         }}>
-                            <Typography mr={1} color="text.secondary">Owner:</Typography>
+                            <Typography mr={1} color="primary" fontWeight={700} fontSize="18px">Owner:</Typography>
                             {owner && <Typography color="text.secondary">{truncateWalletAddress(owner)}</Typography>}
                         </Box>
 
@@ -72,9 +72,9 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            mb: 1.5
+                            mb: 1
                         }}>
-                            <Typography mr={1} color="text.secondary">Twitter:</Typography>
+                            <Typography mr={1} color="primary" fontWeight={700} fontSize="18px">Twitter:</Typography>
 
                             {
                                 twitter && <TwitterLink href={`https://twitter.com/${twitter}`} target="_blank">
@@ -95,9 +95,9 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
-                            mb: 1.5
+                            mb: 1
                         }}>
-                            <Typography sx={{ mr: 1.5 }} color="text.secondary">Bid Level: </Typography>
+                            <Typography mr={1} color="primary" fontWeight={700} fontSize="18px">Bid Level: </Typography>
                             <Typography color="text.secondary">Level {bidLevel?.toString()}</Typography>
                         </Box>
 
@@ -107,8 +107,8 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             justifyContent: "center",
                             mb: 1.5
                         }}>
-                            <Typography sx={{ mr: 1.5 }} color="text.secondary">Bid Price: </Typography>
-                            <Typography color="text.secondary">{basePrice * Number(bidLevel)} World Token</Typography>
+                            <Typography sx={{ mr: 1.5 }} color="primary" fontWeight={700} fontSize="18px">Bid Price: </Typography>
+                            <Typography color="text.secondary">{basePrice * Number(bidLevel)} $WORLD</Typography>
                         </Box>
 
                         <Box sx={{
@@ -117,7 +117,7 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
                             justifyContent: 'space-between',
                             width: "100%"
                         }}>
-                            <Button variant="outlined" disabled={!account} onClick={() => setShowForm(true)}>Bid</Button>
+                            <Button variant="outlined" disabled={!account || worldTokenBalance < (basePrice * Number(bidLevel))} onClick={() => setShowForm(true)}>Bid</Button>
                             <Button variant="contained" disabled={!account || account !== owner} onClick={mint}>Mint</Button>
                         </Box>
                     </Box>

@@ -12,7 +12,6 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Pins from "./Pins";
 import PostOrBid from "./PostOrBid";
 import { useCityInfo } from "../../hooks/useInfo";
-import { useBaseInfo } from "../../contexts/Info/hooks";
 
 const TOKEN = config.mapToken
 
@@ -62,35 +61,32 @@ const Mapbox: React.FC = () => {
     const [popupInfo, setPopupInfo] = useState<any>(null);
     const cities = useCityInfo()
     const isMounted = cities && cities.length > 0
-    const baseInfo = useBaseInfo()
 
     return (
-        <Box>
-            <Map
-                {...viewport}
-                style={{
-                    width: "100%",
-                    height: '100vh'
-                }}
-                mapStyle={"mapbox://styles/mapbox/streets-v10"}
-                onMove={(evt) => setViewport(evt.viewState)}
-                mapboxAccessToken={TOKEN}
-            >
-                {
-                    isMounted
-                        ? <Pins cities={cities} onClick={setPopupInfo} zoom={viewport.zoom} /> : <MapLoadingLayout>
-                            <CircularProgress size="45px" />
-                        </MapLoadingLayout>
-                }
+        <Map
+            {...viewport}
+            style={{
+                width: "100%",
+                height: '90vh'
+            }}
+            mapStyle={"mapbox://styles/mapbox/streets-v10"}
+            onMove={(evt) => setViewport(evt.viewState)}
+            mapboxAccessToken={TOKEN}
+        >
+            {
+                isMounted
+                    ? <Pins cities={cities} onClick={setPopupInfo} zoom={viewport.zoom} /> : <MapLoadingLayout>
+                        <CircularProgress size="45px" />
+                    </MapLoadingLayout>
+            }
 
-                <PostOrBid info={popupInfo} setPopupInfo={setPopupInfo} />
+            <PostOrBid info={popupInfo} setPopupInfo={setPopupInfo} />
 
-                <GeolocateControl style={geolocateStyle} />
-                <FullscreenControl style={fullscreenControlStyle} />
-                <NavigationControl style={navStyle} />
-                <ScaleControl style={scaleControlStyle} />
-            </Map>
-        </Box>
+            <GeolocateControl style={geolocateStyle} />
+            <FullscreenControl style={fullscreenControlStyle} />
+            <NavigationControl style={navStyle} />
+            <ScaleControl style={scaleControlStyle} />
+        </Map>
     )
 
 }

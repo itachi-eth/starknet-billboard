@@ -20,6 +20,7 @@ interface Props {
 
 const ResultDialog: React.FC<Props> = ({ city, open, handleClose, action }) => {
     const { loadingMessage, successMessage, errorMessage, result, transactionHash } = useTransactionManager(action, city)
+    console.log(">>>>>>result", result)
 
     let comp;
 
@@ -69,9 +70,10 @@ const ResultDialog: React.FC<Props> = ({ city, open, handleClose, action }) => {
                 }
             }}
         >
-            <CloseButton onClick={() => {
-                handleClose()
-            }}>
+            <CloseButton
+                onClick={() => {
+                    handleClose()
+                }}>
                 <FaTimes />
             </CloseButton>
 

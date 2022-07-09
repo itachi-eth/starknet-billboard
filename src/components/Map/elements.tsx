@@ -2,6 +2,8 @@ import { styled } from "@mui/system"
 
 export const PopupLayout = styled('div')(({ theme }) => ({
     padding: "20px",
+    minWidth: "30px",
+    maxWidth: "500px",
 
     [theme.breakpoints.down('sm')]: {
         padding: "10px",
@@ -27,7 +29,7 @@ export const StyledImageUploader = styled('input')(({ theme }) => ({
 
     ":focus": {
         outline: "none !important",
-        border: `2px solid #FA02DC`
+        border: `2px solid ${theme.palette.primary.main}`
     }
 }))
 

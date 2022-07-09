@@ -7,11 +7,11 @@ const ICON = `M12,2 C8.14,2 5,5.14 5,9 C5,13.17 9.42,18.92 11.24,21.11 C11.64,21
 
 const SIZE = 35;
 
-const StyledSvg = styled('svg')({
+const StyledSvg = styled('svg')(({ theme }) => ({
     cursor: "pointer",
-    fill: "#FA02DC",
+    fill: theme.palette.primary.main,
     stroke: "none",
-})
+}))
 
 const StyledImg = styled('img')<{ zoom: number }>(({ zoom }) => ({
     minWidth: "64px",
@@ -20,7 +20,7 @@ const StyledImg = styled('img')<{ zoom: number }>(({ zoom }) => ({
     maxHeight: `${zoom * 64}px`,
     width: `${zoom * 10}%`,
     height: `${zoom * 10}%`,
-    transform: `translate(${zoom * 15}px, 0px)`,
+    transform: `translate(${zoom * 15}px, -10px)`,
     cursor: "pointer"
 }))
 

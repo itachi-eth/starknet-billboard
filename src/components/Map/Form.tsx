@@ -17,10 +17,11 @@ import { stringToFelt } from "../../utils/format"
 import ResultDialog, { Action } from "../Dialog"
 import { abis } from "../../config"
 import { getContractAddress } from "../../utils/addressHelpers"
+import { useBaseInfo } from "../../contexts/Info/hooks"
 
 const ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
-const Form: React.FC<FormProps> = ({ info }) => {
+const Form: React.FC<FormProps> = ({ info, setPopupInfo }) => {
     const { account } = useStarknet()
     const [twitterName, setTwitterName] = useState<string>("")
     const [validImage, setValidImage] = useState<boolean>(true)
@@ -31,6 +32,7 @@ const Form: React.FC<FormProps> = ({ info }) => {
     const billlboardBidInvoke = useInvoke('billboard', abis['billboard'], 'bid')
     const billboardAddress = getContractAddress("billboard")
     const allowance = useAllowance()
+    const { worldTokenBalance } = useBaseInfo()
 
     const [file, setFile] = useState<any>(null);
     const [buffer, setBuffer] = useState<any>(null);
@@ -126,13 +128,21 @@ const Form: React.FC<FormProps> = ({ info }) => {
     return (
         <>
             <PopupLayout>
-                <Typography sx={{ fontSize: 20 }} color="text.secondary" gutterBottom>Bid Form</Typography>
-                <Typography sx={{ mb: 1.5 }} color="text.secondary">City: {info.city}</Typography>
+                <Typography sx={{ fontSize: 20 }} color="primary" gutterBottom fontWeight={900}>Bid Form</Typography>
+                <Box sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "start",
+                    mb: 1
+                }}>
+                    <Typography mr={1} color="primary" fontWeight={700}>City: </Typography>
+                    <Typography color="text.secondary">{info.city}</Typography>
+                </Box>
 
                 <form onSubmit={onSubmit}>
                     <Box sx={{ marginBottom: "10px" }}>
                         <Box>
-                            <Typography sx={{ mb: 1.5 }} color="text.secondary">Twitter Username: (without @):</Typography>
+                            <Typography sx={{ mb: 1.5 }} color="primary" fontWeight={700}>* Twitter Username: (without @):</Typography>
                             <CustomInput
                                 value={twitterName}
                                 onChange={(e: any) => handleIsValid(e.currentTarget.value, "twitter")}
@@ -150,7 +160,7 @@ const Form: React.FC<FormProps> = ({ info }) => {
                     </Box>
 
                     <Box sx={{ marginBottom: "10px" }}>
-                        <Typography sx={{ mb: 1.5 }} color="text.secondary">* Upload Images:</Typography>
+                        <Typography sx={{ mb: 1.5 }} color="primary" fontWeight={700}>* Upload Images:</Typography>
                         <StyledImageUploader
                             type="file"
                             name="img"
@@ -176,6 +186,8 @@ const Form: React.FC<FormProps> = ({ info }) => {
                         {!account && !validImage && <Typography color="#dc3545" mt="5px" mb="5px">Sorry! Maximum Image Size is: 5MB</Typography>}
 
                         {!account && !validTwitter && <Typography color="#dc3545" mt="5px" mb="5px">Sorry! Please enter a valid twitter name</Typography>}
+
+                        {account && worldTokenBalance === 0 && <Typography color="#dc3545" mt="5px" mb="5px">Sorry! You have no $WORLD</Typography>}
                     </Box>
                 </form>
             </PopupLayout>

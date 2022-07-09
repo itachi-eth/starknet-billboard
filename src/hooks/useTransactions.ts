@@ -16,14 +16,16 @@ export const useTransactionManager = (action: Action, city: string) => {
     const [result, setResult] = useState<Result>("PENDING")
     const transactions = useTransaction()
 
-    console.log(">>>>>>>transactions", transactions)
-
     useEffect(() => {
+        setResult("PENDING")
+        setLoadingMessage("")
+        setTransactionHash("")
+        setSuccessMessage("")
+        setErrorMessage("")
+
         if (action === "APPROVE") {
-            setResult("PENDING")
-            setTransactionHash("")
             setLoadingMessage("Approving WORLD Token...")
-            if (transactions) {
+            if (transactions && transactionHash) {
                 if (transactions[0].status === "ACCEPTED_ON_L1" || transactions[0].status === "ACCEPTED_ON_L2") {
                     setResult("ACCEPTED")
                     setSuccessMessage('Successfully approve WORLD Token')
@@ -36,9 +38,8 @@ export const useTransactionManager = (action: Action, city: string) => {
                 }
             }
         } else if (action === "BID") {
-            setResult("PENDING")
             setLoadingMessage("Billboard Form Submitting...")
-            if (transactions) {
+            if (transactions && transactionHash) {
                 if (transactions[0].status === "ACCEPTED_ON_L1" || transactions[0].status === "ACCEPTED_ON_L2") {
                     setResult("ACCEPTED")
                     setSuccessMessage(`Successfully bid ${city}`)
@@ -51,9 +52,8 @@ export const useTransactionManager = (action: Action, city: string) => {
                 }
             }
         } else if (action === "MINT") {
-            setResult("PENDING")
             setLoadingMessage("Minting NFT...")
-            if (transactions) {
+            if (transactions && transactionHash) {
                 if (transactions[0].status === "ACCEPTED_ON_L1" || transactions[0].status === "ACCEPTED_ON_L2") {
                     setResult("ACCEPTED")
                     setSuccessMessage(`Successfully mint NFT`)
@@ -66,12 +66,9 @@ export const useTransactionManager = (action: Action, city: string) => {
                 }
             }
         } else if (action === "UPLOAD") {
-            setResult("PENDING")
             setLoadingMessage("Uploading Image to IPFS...")
-            setSuccessMessage("")
-            setErrorMessage("")
         }
-    }, [action, city, transactions])
+    }, [action, city, transactions, transactionHash])
 
     return { loadingMessage, successMessage, errorMessage, result, transactionHash }
 

@@ -1,12 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { useStarknetContract } from "./useContract";
-import { useStarknetCall } from "@starknet-react/core";
+import { useStarknet, useStarknetCall } from "@starknet-react/core";
 import { CityInfo } from "../components/Map/model";
 import cities from "../config/constants/cities";
 import { decodeToText, getBalanceNumber } from "../utils/format";
 import { abis } from "../config";
 import { useRefresh } from "../contexts/Refresh/hooks";
-import { number } from "starknet";
+import { number, uint256 } from "starknet";
 
 export const useCityInfo = () => {
     const [cityInfo, setCityInfo] = useState<CityInfo[]>([])
@@ -76,6 +76,19 @@ export const useBaseInfo = () => {
         basePrice: getBalanceNumber(basePrice) ?? 1,
         splitRatio: splitRatio ?? 2
     }
+}
+
+export const useWorldTokenBalance = () => {
+    const worldTokenContract = useStarknetContract('worldToken', abis['worldToken'])
+    const { account } = useStarknet()
+    const { data } = useStarknetCall({
+        contract: worldTokenContract,
+        method: 'balanceOf',
+        args: [account]
+    })
+
+    const tokenBalance = data && uint256.uint256ToBN(data[0])
+    return tokenBalance ? getBalanceNumber(tokenBalance) : 0
 }
 
 

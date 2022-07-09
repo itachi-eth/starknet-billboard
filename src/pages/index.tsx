@@ -15,15 +15,22 @@ const Home: NextPage = () => {
 
       <main>
         <Box sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          width: '100%'
+          height: '100vh',
+          maxWidth: "1440px",
+          margin: "0 auto",
         }}>
-          <h1>World Map Billboard</h1>
-          <WalletConnect />
+          <Box sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            width: '100%',
+          }}>
+            <h1>Starknet World Map Billboard</h1>
+            <WalletConnect />
+          </Box>
+          <Mapbox />
         </Box>
-        <Mapbox />
+
       </main>
     </div >
   )
