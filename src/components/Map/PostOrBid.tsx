@@ -36,7 +36,6 @@ const PostOrBid: React.FC<PostOrBidProps> = ({ info, setPopupInfo }) => {
             {
                 info && <StyledPopup
                     maxWidth={"500px"}
-                    anchor="top"
                     longitude={info.longitude}
                     latitude={info.latitude}
                     closeOnClick={false}

@@ -11,7 +11,7 @@ import { number, uint256 } from "starknet";
 export const useCityInfo = () => {
     const [cityInfo, setCityInfo] = useState<CityInfo[]>([])
     const billboardContract = useStarknetContract('billboard', abis['billboard'])
-    const { slowRefresh } = useRefresh()
+    const { fastRefresh } = useRefresh()
 
     const fetch = useCallback(async () => {
         if (billboardContract) {
@@ -51,7 +51,7 @@ export const useCityInfo = () => {
             fetch()
         }
         return () => { mounted = false }
-    }, [fetch, slowRefresh])
+    }, [fetch, fastRefresh])
 
     return cityInfo
 }
