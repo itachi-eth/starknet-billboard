@@ -93,12 +93,12 @@ const Form: React.FC<FormProps> = ({ info, setPopupInfo, setShowForm }) => {
         handleDialog(true)
         onSetSelectedCity(info.city)
         setShowForm(false)
-        removeTransaction(latestTransactionHash)
 
         const response = await ipfs.add(buffer) as any
 
         if (response) {
             onSetAction("BID")
+            removeTransaction(latestTransactionHash)
             const hash = response.path as String
             const hash1 = hash.substring(0, hash.length / 2);
             const hash2 = hash.substring(hash.length / 2)

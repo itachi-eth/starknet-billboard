@@ -52,19 +52,19 @@ const Details: React.FC<FormProps> = ({ info, setShowForm, setPopupInfo }) => {
             const trait: Trait = {
                 attributes: [
                     {
-                        trait_type: "bid level",
+                        trait_type: "Bid Level",
                         value: String(bidLevel)
                     },
                     {
-                        trait_type: "city",
+                        trait_type: "City",
                         value: city
                     },
                     {
-                        trait_type: "twitter",
+                        trait_type: "Twitter",
                         value: String(twitter),
                     },
                     {
-                        trait_type: "bid price",
+                        trait_type: "Bid Price",
                         value: `${Number(bidPrice)} $WORLD`
                     },
 

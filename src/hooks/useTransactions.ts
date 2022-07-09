@@ -24,15 +24,15 @@ export const useTransactionManager = (action: Action, city: string) => {
         setErrorMessage("")
 
         if (action === "APPROVE") {
-            setLoadingMessage("Approving WORLD Token...")
+            setLoadingMessage("Approving $WORLD...")
             if (transaction) {
                 onSetLatestTransactionHash(transaction.transactionHash)
                 if (transaction.status === "ACCEPTED_ON_L1" || transaction.status === "ACCEPTED_ON_L2") {
                     setResult("ACCEPTED")
-                    setSuccessMessage('Successfully approve WORLD Token')
+                    setSuccessMessage('Successfully approve $WORLD')
                 } else if (transaction.status === "REJECTED" || transaction.status === "NOT_RECEIVED") {
                     setResult("REJECTED")
-                    setErrorMessage("Failed to approve WORLD Token")
+                    setErrorMessage("Failed to approve $WORLD")
                 } else {
                     setResult("PENDING")
                 }
