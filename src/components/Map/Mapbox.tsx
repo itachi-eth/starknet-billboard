@@ -53,9 +53,9 @@ const MapLoadingLayout = styled('div')({
 
 const Mapbox: React.FC = () => {
     const [viewport, setViewport] = useState({
-        latitude: 30.7946,
+        latitude: 33.7946,
         longitude: 106.5348,
-        zoom: 3,
+        zoom: 4,
         bearing: 0,
         pitch: 0
     });
