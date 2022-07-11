@@ -18,8 +18,8 @@ const Home: NextPage = () => {
       <main>
         <Box sx={{
           height: '100vh',
-          maxWidth: "1920px",
           padding: "0 50px",
+          margin: "0 auto"
         }}>
           <Box sx={{
             display: 'flex',

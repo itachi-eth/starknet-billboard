@@ -6,7 +6,7 @@ import Providers from '../Providers'
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Providers>
-      < Component {...pageProps} />
+      <Component {...pageProps} />
     </Providers>
   )
 }
