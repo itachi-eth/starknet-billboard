@@ -70,7 +70,8 @@ const Mapbox: React.FC = () => {
                 {...viewport}
                 style={{
                     width: "100%",
-                    height: '90vh'
+                    height: '90vh',
+                    boxShadow: "8px 8px 5px rgb(36, 36, 96, 0.8)"
                 }}
                 mapStyle={"mapbox://styles/mapbox/streets-v10"}
                 onMove={(evt) => setViewport(evt.viewState)}
